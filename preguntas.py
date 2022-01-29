@@ -12,50 +12,28 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+from posixpath import split
+
+
 original_data = open('data.csv', 'r').readlines()
 ezData = [row[0:-1] for row in original_data]
 ezData = [row.split() for row in ezData]
+
 
 def pregunta_01():
     data = [int(row[2]) for row in original_data]
     ans = sum(data)
     return ans
 
+
 def pregunta_02():
-    """
-    Retorne la cantidad de registros por cada letra de la primera columna como la lista
-    de tuplas (letra, cantidad), ordendas alfabéticamente.
-
-    Rta/
-    [
-        ("A", 8),
-        ("B", 7),
-        ("C", 5),
-        ("D", 6),
-        ("E", 14),
-    ]
-
-    """
     column_letras = [row[0] for row in ezData]
     letra_aparicion = {i:column_letras.count(i) for i in column_letras}
     ans = list(letra_aparicion.items())
     return sorted(ans)
 
+
 def pregunta_03():
-    """
-    Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
-    de tuplas (letra, suma) ordendas alfabeticamente.
-
-    Rta/
-    [
-        ("A", 53),
-        ("B", 36),
-        ("C", 27),
-        ("D", 31),
-        ("E", 67),
-    ]
-
-    """
     cols_tuple = [(row[0], int(row[1])) for row in ezData]
     column_letras = [row[0] for row in ezData]
     letra_aparicion = {i:0 for i in column_letras}
@@ -64,34 +42,13 @@ def pregunta_03():
         aux = 0
         for element in cols_tuple:
             if (element[0] == letter):
-                print(letter, element[0], element[1])
                 aux = aux + element[1]
         new_dic[letter] = aux
     ans = list(new_dic.items())
     return sorted(ans)
 
+
 def pregunta_04():
-    """
-    La columna 3 contiene una fecha en formato `YYYY-MM-DD`. Retorne la cantidad de
-    registros por cada mes, tal como se muestra a continuación.
-
-    Rta/
-    [
-        ("01", 3),
-        ("02", 4),
-        ("03", 2),
-        ("04", 4),
-        ("05", 3),
-        ("06", 3),
-        ("07", 5),
-        ("08", 6),
-        ("09", 3),
-        ("10", 2),
-        ("11", 2),
-        ("12", 3),
-    ]
-
-    """
     column_fechas = [row[2] for row in ezData]
     meses = [letra[5:7] for letra in column_fechas]
     apariciones = {i:meses.count(i) for i in meses}
@@ -100,21 +57,16 @@ def pregunta_04():
 
 
 def pregunta_05():
-    """
-    Retorne una lista de tuplas con el valor maximo y minimo de la columna 2 por cada
-    letra de la columa 1.
-
-    Rta/
-    [
-        ("A", 9, 2),
-        ("B", 9, 1),
-        ("C", 9, 0),
-        ("D", 8, 3),
-        ("E", 9, 1),
-    ]
-
-    """
-    return
+    cols_tuple = [(row[0], int(row[1])) for row in ezData]
+    letras_unicas = set([row[0] for row in ezData])
+    aux_list_2 = []
+    for letter in letras_unicas:
+        aux_list_1 = []
+        for element in cols_tuple:
+            if (element[0] == letter):
+                aux_list_1.append(element[1])
+        aux_list_2.append(tuple([letter, max(aux_list_1), min(aux_list_1)]))
+    return sorted(aux_list_2)
 
 
 def pregunta_06():
@@ -139,56 +91,47 @@ def pregunta_06():
     ]
 
     """
-    return
+    col_cadena = [row[4] for row in ezData]
+    col_individual = [elemento.split(",") for elemento in col_cadena]
+    lista_plana = [i for sublist in col_individual for i in sublist]
+    letras = [elemento[0:3] for elemento in lista_plana]
+    numeros = [int(elemento[4:]) for elemento in lista_plana]
+    cols_tuple = list(zip(letras, numeros))
+    letras_unicas = set(letras)
+    aux_list_2 = []
+    for letter in letras_unicas:
+        aux_list_1 = []
+        for element in cols_tuple:
+            if (element[0] == letter):
+                aux_list_1.append(element[1])
+        aux_list_2.append(tuple([letter, min(aux_list_1), max(aux_list_1)]))
+    return sorted(aux_list_2)
 
 
 def pregunta_07():
-    """
-    Retorne una lista de tuplas que asocien las columnas 0 y 1. Cada tupla contiene un
-    valor posible de la columna 2 y una lista con todas las letras asociadas (columna 1)
-    a dicho valor de la columna 2.
-
-    Rta/
-    [
-        (0, ["C"]),
-        (1, ["E", "B", "E"]),
-        (2, ["A", "E"]),
-        (3, ["A", "B", "D", "E", "E", "D"]),
-        (4, ["E", "B"]),
-        (5, ["B", "C", "D", "D", "E", "E", "E"]),
-        (6, ["C", "E", "A", "B"]),
-        (7, ["A", "C", "E", "D"]),
-        (8, ["E", "D", "E", "A", "B"]),
-        (9, ["A", "B", "E", "A", "A", "C"]),
-    ]
-
-    """
-    return
+    nums_unicos = set([int(row[1]) for row in ezData])
+    cols_tuple = [(row[0], int(row[1])) for row in ezData]
+    ans_list = []
+    for number in nums_unicos:
+        aux_list = []
+        for element in cols_tuple:
+            if (element[1] == number):
+                aux_list.append(element[0])
+        ans_list.append(tuple([number, aux_list]))
+    return ans_list
 
 
 def pregunta_08():
-    """
-    Genere una lista de tuplas, donde el primer elemento de cada tupla contiene  el valor
-    de la segunda columna; la segunda parte de la tupla es una lista con las letras
-    (ordenadas y sin repetir letra) de la primera  columna que aparecen asociadas a dicho
-    valor de la segunda columna.
-
-    Rta/
-    [
-        (0, ["C"]),
-        (1, ["B", "E"]),
-        (2, ["A", "E"]),
-        (3, ["A", "B", "D", "E"]),
-        (4, ["B", "E"]),
-        (5, ["B", "C", "D", "E"]),
-        (6, ["A", "B", "C", "E"]),
-        (7, ["A", "C", "D", "E"]),
-        (8, ["A", "B", "D", "E"]),
-        (9, ["A", "B", "C", "E"]),
-    ]
-
-    """
-    return
+    nums_unicos = set([int(row[1]) for row in ezData])
+    cols_tuple = [(row[0], int(row[1])) for row in ezData]
+    ans_list = []
+    for number in nums_unicos:
+        aux_list = []
+        for element in cols_tuple:
+            if (element[1] == number):
+                aux_list.append(element[0])
+        ans_list.append(tuple([number, sorted(list(set(aux_list)))]))
+    return ans_list
 
 
 def pregunta_09():
