@@ -12,17 +12,14 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+original_data = open('data.csv', 'r').readlines()
+ezData = [row[0:-1] for row in original_data]
+ezData = [row.split() for row in ezData]
 
 def pregunta_01():
-    """
-    Retorne la suma de la segunda columna.
-
-    Rta/
-    214
-
-    """
-    return
-
+    data = [int(row[2]) for row in original_data]
+    ans = sum(data)
+    return ans
 
 def pregunta_02():
     """
@@ -39,8 +36,10 @@ def pregunta_02():
     ]
 
     """
-    return
-
+    column_letras = [row[0] for row in ezData]
+    letra_aparicion = {i:column_letras.count(i) for i in column_letras}
+    ans = list(letra_aparicion.items())
+    return sorted(ans)
 
 def pregunta_03():
     """
@@ -57,8 +56,19 @@ def pregunta_03():
     ]
 
     """
-    return
-
+    cols_tuple = [(row[0], int(row[1])) for row in ezData]
+    column_letras = [row[0] for row in ezData]
+    letra_aparicion = {i:0 for i in column_letras}
+    new_dic = {}
+    for letter in letra_aparicion.keys():
+        aux = 0
+        for element in cols_tuple:
+            if (element[0] == letter):
+                print(letter, element[0], element[1])
+                aux = aux + element[1]
+        new_dic[letter] = aux
+    ans = list(new_dic.items())
+    return sorted(ans)
 
 def pregunta_04():
     """
@@ -82,7 +92,11 @@ def pregunta_04():
     ]
 
     """
-    return
+    column_fechas = [row[2] for row in ezData]
+    meses = [letra[5:7] for letra in column_fechas]
+    apariciones = {i:meses.count(i) for i in meses}
+    ans = list(apariciones.items())
+    return sorted(ans)
 
 
 def pregunta_05():
