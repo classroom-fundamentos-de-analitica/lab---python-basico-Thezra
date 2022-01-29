@@ -12,6 +12,8 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+from hashlib import new
+from operator import le
 from posixpath import split
 
 
@@ -70,27 +72,6 @@ def pregunta_05():
 
 
 def pregunta_06():
-    """
-    La columna 5 codifica un diccionario donde cada cadena de tres letras corresponde a
-    una clave y el valor despues del caracter `:` corresponde al valor asociado a la
-    clave. Por cada clave, obtenga el valor asociado mas pequeño y el valor asociado mas
-    grande computados sobre todo el archivo.
-
-    Rta/
-    [
-        ("aaa", 1, 9),
-        ("bbb", 1, 9),
-        ("ccc", 1, 10),
-        ("ddd", 0, 9),
-        ("eee", 1, 7),
-        ("fff", 0, 9),
-        ("ggg", 3, 10),
-        ("hhh", 0, 9),
-        ("iii", 0, 9),
-        ("jjj", 5, 17),
-    ]
-
-    """
     col_cadena = [row[4] for row in ezData]
     col_individual = [elemento.split(",") for elemento in col_cadena]
     lista_plana = [i for sublist in col_individual for i in sublist]
@@ -135,83 +116,62 @@ def pregunta_08():
 
 
 def pregunta_09():
-    """
-    Retorne un diccionario que contenga la cantidad de registros en que aparece cada
-    clave de la columna 5.
-
-    Rta/
-    {
-        "aaa": 13,
-        "bbb": 16,
-        "ccc": 23,
-        "ddd": 23,
-        "eee": 15,
-        "fff": 20,
-        "ggg": 13,
-        "hhh": 16,
-        "iii": 18,
-        "jjj": 18,
-    }
-
-    """
-    return
+    col_cadena = [row[4] for row in ezData]
+    col_individual = [elemento.split(",") for elemento in col_cadena]
+    lista_plana = [i for sublist in col_individual for i in sublist]
+    letras = sorted([elemento[0:3] for elemento in lista_plana])
+    apariciones = {i:letras.count(i) for i in letras}
+    return apariciones
 
 
 def pregunta_10():
-    """
-    Retorne una lista de tuplas contengan por cada tupla, la letra de la columna 1 y la
-    cantidad de elementos de las columnas 4 y 5.
-
-    Rta/
-    [
-        ("E", 3, 5),
-        ("A", 3, 4),
-        ("B", 4, 4),
-        ...
-        ("C", 4, 3),
-        ("E", 2, 3),
-        ("E", 3, 3),
-    ]
-
-
-    """
-    return
+    letras = [tuple([row[0], len(row[3].split(",")), len(row[4].split(","))]) for row in ezData]
+    return letras
 
 
 def pregunta_11():
-    """
-    Retorne un diccionario que contengan la suma de la columna 2 para cada letra de la
-    columna 4, ordenadas alfabeticamente.
+    letras = [row[3] for row in ezData]
+    col_individual = [elemento.split(",") for elemento in letras]
+    lista_plana_letras = sorted([i for sublist in col_individual for i in sublist])
+    lista_nums = []
+    lista_letras = []
 
-    Rta/
-    {
-        "a": 122,
-        "b": 49,
-        "c": 91,
-        "d": 73,
-        "e": 86,
-        "f": 134,
-        "g": 35,
-    }
+    for i in range(len(col_individual)):
+        for subelems in col_individual[i]:
+            lista_nums.append(int(ezData[i][1]))
+            lista_letras.append(subelems)
+    tup = list(zip(lista_letras, lista_nums))
 
+    letra_aparicion = {i:0 for i in lista_plana_letras}
+    new_dic = {}
+    for letter in letra_aparicion.keys():
+        aux = 0
+        for element in tup:
+            if (element[0] == letter):
+                aux = aux + element[1]
+        new_dic[letter] = aux
 
-    """
-    return
+    return new_dic
 
 
 def pregunta_12():
-    """
-    Genere un diccionario que contengan como clave la columna 1 y como valor la suma de
-    los valores de la columna 5 sobre todo el archivo.
-
-    Rta/
-    {
-        'A': 177,
-        'B': 187,
-        'C': 114,
-        'D': 136,
-        'E': 324
-    }
-
-    """
-    return
+    column_letras = [row[0] for row in ezData]
+    col_cadena = [row[4] for row in ezData]
+    col_individual = [elemento.split(",") for elemento in col_cadena]
+    lista_suma = []
+    for sublist in col_individual:
+        inside_list = []
+        for element in sublist:
+            inside_list.append(int(element[4:]))
+        lista_suma.append(sum(inside_list))
+    cols_tuple = list(zip(column_letras, lista_suma))
+    
+    letra_aparicion = {i:0 for i in sorted(column_letras)}
+    new_dic = {}
+    for letter in letra_aparicion.keys():
+        aux = 0
+        for element in cols_tuple:
+            if (element[0] == letter):
+                aux = aux + element[1]
+        new_dic[letter] = aux
+    return new_dic
